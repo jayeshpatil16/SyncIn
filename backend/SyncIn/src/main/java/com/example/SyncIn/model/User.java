@@ -33,7 +33,7 @@ public class User {
 
     @Column(nullable = false)
     @JsonIgnore
-    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private String passwordHash;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -45,8 +45,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Vote> votes;
 
+    @Builder.Default
     private int followers = 0;
 
+    @Builder.Default
     private int following = 0;
 
     private String avatarUrl;
