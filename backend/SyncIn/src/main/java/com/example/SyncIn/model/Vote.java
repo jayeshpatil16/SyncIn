@@ -8,6 +8,7 @@ import lombok.ToString;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Builder
 @Table(
     name = "votes",
@@ -55,6 +56,7 @@ public class Vote {
     {
         this.votedOn = LocalDateTime.now();
     }
+
 
     public boolean isSameType(VoteType incomingVoteType)
     {

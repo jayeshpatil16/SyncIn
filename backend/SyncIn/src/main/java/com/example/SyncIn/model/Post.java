@@ -44,9 +44,14 @@ public class Post {
 
     private LocalDateTime createdAt;
 
-    private int upVoteCount;
+    @Builder.Default
+    private int upVoteCount = 0;
 
-    private int downVoteCount;
+    @Builder.Default
+    private int downVoteCount = 0;
+
+    @Builder.Default
+    private int commentCount = 0;
 
     @PrePersist
     protected void onCreate()
@@ -69,6 +74,17 @@ public class Post {
     {
         if(this.downVoteCount > 0)
             downVoteCount--;
+    }
+
+    public void incrementCommentCount()
+    {
+        this.commentCount++;
+    }
+
+    public void decrementCommentCount()
+    {
+        if(commentCount > 0)
+            this.commentCount--;
     }
 
 

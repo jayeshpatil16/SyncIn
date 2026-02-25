@@ -9,6 +9,7 @@ import java.security.Key;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 public class JwtService {
@@ -33,21 +34,27 @@ public class JwtService {
                 .setSubject(id)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(expiry))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String extractId(String token)
+    public Long extractId(String token)
     {
-        return Jwts.parserBuilder()
+        return Long.parseLong(Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .getSubject());
     }
 
-    public boolean isTokenValid(String token, String id)
+    public boolean isTokenValid(String token, Long id)
     {
-        return extractId(token).equals(id);
+        try {
+            Long tokenId = extractId(token);
+            return Objects.equals(tokenId, id);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

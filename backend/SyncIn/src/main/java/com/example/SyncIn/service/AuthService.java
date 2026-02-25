@@ -1,5 +1,6 @@
 package com.example.SyncIn.service;
 
+import com.example.SyncIn.dto.LoginResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class AuthService {
         }
 
         User user = User.builder()
-            .username(registerRequest.getEmail())
+            .username(registerRequest.getUsername())
             .email(registerRequest.getEmail())
             .passwordHash(passwordEncoder.encode(registerRequest.getPassword()))
             .build();
@@ -49,7 +50,7 @@ public class AuthService {
         return "User registered successfully!!";
     }
 
-    public ResponseEntity<Map<String, String>> login(LoginRequest loginRequest)
+    public LoginResponse login(LoginRequest loginRequest)
     {
         User user = userRepository.findByEmailOrUsername(loginRequest.getIdentifier(), loginRequest.getIdentifier())
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -61,8 +62,13 @@ public class AuthService {
 
         String token = jwtService.generateToken(user.getId().toString());
 
-        return ResponseEntity.ok(Map.of(
-                "token", token
-        ));
+        LoginResponse loginResponse = new LoginResponse(
+                token,
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()
+        );
+
+        return loginResponse;
     }
 }

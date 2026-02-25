@@ -51,8 +51,10 @@ public class User {
     @Builder.Default
     private int following = 0;
 
+    @Setter
     private String avatarUrl;
 
+    @Setter
     private String bio;
 
     private LocalDateTime createdAt;
@@ -85,5 +87,10 @@ public class User {
     {
         if(this.followers > 0)
             followers--;
+    }
+
+    public void changePasswordHash(String passwordHash)
+    {
+        this.passwordHash = passwordHash;
     }
 }

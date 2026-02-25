@@ -1,5 +1,6 @@
 package com.example.SyncIn.controller;
 
+import com.example.SyncIn.dto.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +29,11 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest)
     {
         authService.register(registerRequest);
-
         return ResponseEntity.ok("User registered successfully!");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest)
+    public LoginResponse login(@RequestBody LoginRequest loginRequest)
     {
         return authService.login(loginRequest);
 
