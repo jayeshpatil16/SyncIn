@@ -1,1 +1,61 @@
-<p>login works!</p>
+<div class="edit-profile-container flex items-center flex-col p-6">
+<h1 class="text-4xl font-extrabold mb-10">Login</h1>
+<form #loginForm="ngForm" class="space-y-6 w-130 mb-10" (ngSubmit)="login(loginForm)">
+    <div class="flex gap-2 flex-col">
+      <label class="text-sm text-gray-400">Username or Email</label>
+      <input
+        name="identifier"
+        [(ngModel)]="identifier"
+        type="text"
+        placeholder="Enter username or email"
+        required
+        #identifierRef="ngModel"
+        class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"/>
+      @if (submitted && identifierRef.invalid && identifierRef.touched) {
+        <p class="text-red-500 text-sm">
+          @if (identifierRef.errors?.['required']) {
+            Identifier is required
+          }
+        </p>
+      }
+    </div>
+
+    <div class="flex gap-2 flex-col">
+      <label class="text-sm text-gray-400">Password</label>
+      <input
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        placeholder="password"
+        required
+        minlength='8'
+        #passwordRef="ngModel"
+        class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"/>
+      @if (submitted && passwordRef.invalid && passwordRef.touched) {
+        <p class="text-red-500 text-sm">
+          @if (passwordRef.errors?.['required']) {
+            Password is required
+          }
+          @if (passwordRef.errors?.['minlength']) {
+            Minimum 8 characters required
+          }
+        </p>
+      }
+    </div>
+
+
+    <div class="w-full flex items-center justify-center">
+      <button
+       type="submit"
+       [disabled]="loginForm.invalid"
+       class=" bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-3xl disabled:opacity-50 transition-all">
+       {{ 'Login' }}
+      </button>
+    </div>
+</form>
+
+<p class="">
+  Don't have an account?
+  <a class="text-blue-500" routerLink="/register">Register here</a>
+</p>
+</div>

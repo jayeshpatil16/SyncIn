@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserProfileResponse {
     private String username;
+    private String name;
     private String bio;
     private String email;
     private int followers;

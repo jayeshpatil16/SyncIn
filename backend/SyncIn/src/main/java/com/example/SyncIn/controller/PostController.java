@@ -37,14 +37,14 @@ public class PostController {
     }
 
     @GetMapping("/feed/posts/{id}")
-    public ResponseEntity<PostDetailResponse> getDetailedPost(@PathVariable Long id)
+    public ResponseEntity<PostDetailResponse> getDetailedPost(@PathVariable Long id, @AuthenticationPrincipal User user)
     {
-        PostDetailResponse postDetailResponse = postService.getDetailedPost(id);
+        PostDetailResponse postDetailResponse = postService.getDetailedPost(id, user);
         return ResponseEntity.ok(postDetailResponse);
     }
 
     @GetMapping("/me/posts")
-    public ResponseEntity<List<PostResponse>> getMyPosts(@RequestParam(required = false) String cursor, @RequestParam int limit, @AuthenticationPrincipal User user)
+    public ResponseEntity<List<PostResponse>> getMyPosts(@RequestParam(required = false) String cursor, @RequestParam(defaultValue = "50") int limit, @AuthenticationPrincipal User user)
     {
         List<PostResponse> myPosts = postService.getMyFeed(cursor, limit, user.getId());
 

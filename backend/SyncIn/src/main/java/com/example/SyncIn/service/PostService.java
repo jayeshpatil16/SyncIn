@@ -1,11 +1,10 @@
 package com.example.SyncIn.service;
 
 import com.example.SyncIn.dto.*;
-import com.example.SyncIn.model.Comment;
-import com.example.SyncIn.model.Post;
-import com.example.SyncIn.model.User;
+import com.example.SyncIn.model.*;
 import com.example.SyncIn.repository.CommentRepository;
 import com.example.SyncIn.repository.PostRepository;
+import com.example.SyncIn.repository.VoteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -22,11 +22,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final VoteRepository voteRepository;
 
-    public PostService(PostRepository postRepository, CommentRepository commentRepository)
+    public PostService(PostRepository postRepository, CommentRepository commentRepository, VoteRepository voteRepository)
     {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.voteRepository = voteRepository;
     }
 
     public ResponseEntity<PostResponse> createPost(CreatePostRequest createPostRequest, User user)
@@ -62,7 +64,6 @@ public class PostService {
                 limit,
                 Sort.by("createdAt").descending()
         );
-
         if (cursor == null) {
             Page<Post> page = postRepository.findAll(pageable);
             posts = page.getContent();
@@ -70,7 +71,6 @@ public class PostService {
             LocalDateTime cursorTime = LocalDateTime.parse(cursor);
             posts = postRepository.findByCreatedAtBefore(cursorTime, pageable);
         }
-
         return posts.stream()
                 .map(this::mapToFeedResponse)
                 .toList();
@@ -78,7 +78,6 @@ public class PostService {
 
     public List<PostResponse> getMyFeed(String cursor, int limit, Long userId)
     {
-        LocalDateTime cursorTime = LocalDateTime.parse(cursor);
         List<Post> posts;
         Pageable pageable = PageRequest.of(
                 0,
@@ -92,6 +91,7 @@ public class PostService {
         }
         else
         {
+            LocalDateTime cursorTime = LocalDateTime.parse(cursor);
             posts = postRepository.findByUserIdAndCreatedAtBefore(userId, cursorTime, pageable);
         }
         return posts.stream()
@@ -99,11 +99,18 @@ public class PostService {
                 .toList();
     }
 
-    public PostDetailResponse getDetailedPost(Long postId)
+    public PostDetailResponse getDetailedPost(Long postId, User user)
     {
         Post post = postRepository.findPostWithUserById(postId).orElseThrow(() -> new RuntimeException("Post not found!"));
-
         List<Comment> comments = commentRepository.findCommentsWithUserByPostId(postId);
+        VoteType voteType = null;
+        if(user != null)
+        {
+            Optional<Vote> vote = voteRepository.findByUserIdAndPostId(user.getId(), postId);
+            if(vote.isPresent())
+                voteType = vote.get().getVoteType();
+            System.out.println("this is for detailed post " + voteType);
+        }
 
         List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> new CommentResponse(
@@ -111,6 +118,7 @@ public class PostService {
                         comment.getContent(),
                         comment.getCreatedAt(),
                         new Author(
+                                comment.getUser().getName(),
                                 comment.getUser().getAvatarUrl(),
                                 comment.getUser().getUsername(),
                                 comment.getUser().getId()
@@ -125,6 +133,7 @@ public class PostService {
                 post.getContent(),
                 post.getCreatedAt(),
                 new Author(
+                        post.getUser().getName(),
                         post.getUser().getAvatarUrl(),
                         post.getUser().getUsername(),
                         post.getUser().getId()
@@ -132,6 +141,7 @@ public class PostService {
                 post.getUpVoteCount(),
                 post.getDownVoteCount(),
                 post.getCommentCount(),
+                voteType,
                 commentResponses
         );
     }
@@ -151,6 +161,7 @@ public class PostService {
                 post.getId(),
                 post.getCreatedAt(),
                 new Author(
+                        post.getUser().getName(),
                         post.getUser().getAvatarUrl(),
                         post.getUser().getUsername(),
                         post.getUser().getId()

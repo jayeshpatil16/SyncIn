@@ -86,7 +86,7 @@ public class VoteService {
                 }
             }
         }
-
+        System.out.print("This is from VoteController " + voteType.toString());
         return ResponseEntity.ok(
                 new VoteResponse(
                         post.getUpVoteCount(),

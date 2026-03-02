@@ -1,0 +1,60 @@
+<div class="edit-profile-container flex items-center flex-col p-6">
+  <h1 class="text-4xl font-extrabold mb-4">Edit Profile</h1>
+
+  <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="space-y-6 w-150">
+
+    <div class="flex gap-2 flex-col">
+      <label class="text-sm text-gray-400">Name</label>
+      <input
+        formControlName="name"
+        [class.animate-pulse]="isLoading"
+        class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"
+        placeholder="Enter your name" />
+    </div>
+
+    <div class="flex gap-2 flex-col">
+      <label class="text-sm text-gray-400">Username</label>
+      <input
+        formControlName="username"
+        [class.animate-pulse]="isLoading"
+        class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"
+        placeholder="Enter updated username" />
+    </div>
+
+    <div class="flex gap-2 flex-col">
+      <label class="text-sm text-gray-400">Bio</label>
+      <textarea
+        formControlName="bio"
+        [class.animate-pulse]="isLoading"
+        class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 h-24"
+        placeholder="Tell us about yourself..."></textarea>
+    </div>
+
+    <div class="flex gap-2 flex-col">
+      <label class="text-sm text-gray-400">Email</label>
+      <input
+        formControlName="email"
+        [class.animate-pulse]="isLoading"
+        class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"
+        placeholder="update your email" />
+    </div>
+
+    <div class="flex gap-2 flex-col">
+      <label class="text-sm text-gray-400">Avatar</label>
+      <input
+        formControlName="avatar_url"
+        [class.animate-pulse]="isLoading"
+        class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"
+        placeholder="change avatar" />
+    </div>
+
+    <div class="w-full flex items-center justify-center">
+    <button
+      type="submit"
+      [disabled]="profileForm.invalid || isLoading"
+      class=" bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-3xl disabled:opacity-50 transition-all">
+      {{ isLoading ? 'Loading...' : 'Save Changes' }}
+    </button>
+    </div>
+  </form>
+</div>

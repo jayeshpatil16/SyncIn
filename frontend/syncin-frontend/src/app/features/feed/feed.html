@@ -1,1 +1,26 @@
-<p>feed works!</p>
+<h1 class="text-4xl font-extrabold mb-10">Feed</h1>
+<div class="mx-40 mt-5">
+@for (post of posts$ | async; track post.id) {
+  <div class="bg-white p-4 mb-4 rounded-3xl shadow-lg">
+    <div class="flex flex-row justify-between">
+    <div (click)="goToPost(post.author.id)" class="bg-zinc-100 mb-3 p-2 rounded-2xl cursor-pointer flex flex-row w-fit gap-4">
+      <img class="rounded-4xl w-11 h-11 object-cover" [src]=`${post.author.avatar_url}` alt="owner avatar">
+      <div class="flex flex-col">
+        <span class="font-bold text-lg">{{post.author.name}}</span>
+        <span class=" text-sm text-gray-600">@{{post.author.username}}</span>
+      </div>
+    </div>
+      <span class="text-gray-600 text-sm">{{postedAt(post.createdAt)}}</span>
+    </div>
+    <a [routerLink]="['/post', post.id]" class="">
+    <h2 class="font-bold text-lg">{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    </a>
+    <div class="flex justify-between mr-70 mt-3 text-sm text-gray-600">
+      <span>UpVotes: {{post.upVoteCount}}</span>
+      <span>DownVotes: {{post.downVoteCount}}</span>
+      <span>Comments: {{post.commentCount}}</span>
+    </div>
+  </div>
+}
+</div>

@@ -33,6 +33,7 @@ public class UserService {
         return ResponseEntity.ok(
                 new UserProfileResponse(
                         user.getUsername(),
+                        user.getName(),
                         user.getBio(),
                         user.getEmail(),
                         user.getFollowers(),
@@ -58,6 +59,7 @@ public class UserService {
     public ResponseEntity<UserProfileResponse> updateUserProfile(User user, UpdateProfileRequest updateProfileRequest)
     {
         user.setEmail(updateProfileRequest.getEmail());
+        user.setName(updateProfileRequest.getName());
         user.setUsername(updateProfileRequest.getUsername());
         user.setBio(updateProfileRequest.getBio());
         user.setAvatarUrl(updateProfileRequest.getAvatar_url());
@@ -66,6 +68,7 @@ public class UserService {
 
         return ResponseEntity.ok(new UserProfileResponse(
                 user.getUsername(),
+                user.getName(),
                 user.getBio(),
                 user.getEmail(),
                 user.getFollowers(),

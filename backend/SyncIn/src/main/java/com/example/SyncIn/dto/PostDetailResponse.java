@@ -1,5 +1,6 @@
 package com.example.SyncIn.dto;
 
+import com.example.SyncIn.model.VoteType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,5 +18,6 @@ public class PostDetailResponse {
     private int upVoteCount;
     private int downVoteCount;
     private int commentCount;
+    private VoteType voteType;
     private List<CommentResponse> comments;
 }

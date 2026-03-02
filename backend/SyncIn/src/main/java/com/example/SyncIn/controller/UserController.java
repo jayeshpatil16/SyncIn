@@ -27,12 +27,13 @@ public class UserController {
         return ResponseEntity.ok(
             new UserProfileResponse(
                     user.getUsername(),
+                    user.getName(),
                     user.getBio(),
                     user.getEmail(),
                     user.getFollowers(),
                     user.getFollowing(),
                     false,
-                    false,
+                    true,
                     user.getAvatarUrl()
             )
         );

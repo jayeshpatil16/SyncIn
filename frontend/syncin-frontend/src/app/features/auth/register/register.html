@@ -1,1 +1,99 @@
-<p>register works!</p>
+<div class="edit-profile-container flex items-center flex-col p-6">
+  <h1 class="text-4xl font-extrabold mb-10">Register</h1>
+<form #registrationForm="ngForm" class="space-y-6 w-130 mb-10" (ngSubmit)="register(registrationForm)">
+
+  <div class="flex gap-2 flex-col">
+    <label class="text-sm text-gray-400">Name</label>
+    <input
+      name="username"
+      [(ngModel)]="name"
+      type="text"
+      placeholder="Enter your name"
+      required
+      #nameRef="ngModel"
+      class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"/>
+  </div>
+
+  <div class="flex gap-2 flex-col">
+    <label class="text-sm text-gray-400">Username</label>
+    <input
+      name="username"
+      [(ngModel)]="username"
+      type="text"
+      placeholder="Enter your username"
+      required
+      #usernameRef="ngModel"
+      class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"/>
+    @if (submitted && usernameRef.invalid && usernameRef.touched) {
+      <p class="text-red-500 text-sm">
+        @if (usernameRef.errors?.['required']) {
+          username is required
+        }
+      </p>
+    }
+  </div>
+
+
+  <div class="flex gap-2 flex-col">
+    <label class="text-sm text-gray-400">Email</label>
+    <input
+      name="email"
+      type="email"
+      [(ngModel)]="email"
+      placeholder="Enter your email"
+      required
+      email
+      #emailRef="ngModel"
+      class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"/>
+    @if (submitted && emailRef.invalid && emailRef.touched) {
+      <p class="text-red-500 text-sm">
+        @if (emailRef.errors?.['required']) {
+          Email is required
+        }
+        @if (emailRef.errors?.['email']) {
+          Invalid email format
+        }
+      </p>
+    }
+  </div>
+
+
+  <div class="flex gap-2 flex-col">
+    <label class="text-sm text-gray-400">Password</label>
+    <input
+      name="password"
+      type="password"
+      [(ngModel)]="password"
+      placeholder="Enter password (Min 8 chars)"
+      required
+      minlength="8"
+      #passwordRef="ngModel"
+      class="p-2 rounded-3xl shadow-lg text-black border-2 border-gray-400 focus:border-blue-500 outline-none"/>
+    @if (submitted && passwordRef.invalid && passwordRef.touched) {
+      <p class="text-red-500 text-sm">
+        @if (passwordRef.errors?.['required']) {
+          Password is required
+        }
+        @if (passwordRef.errors?.['minlength']) {
+          Minimum 8 characters required
+        }
+      </p>
+    }
+  </div>
+
+  <div class="w-full flex items-center justify-center">
+    <button
+      type="submit"
+      [disabled]="registrationForm.invalid"
+      class=" bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-3xl disabled:opacity-50 transition-all">
+      {{ 'Register' }}
+    </button>
+  </div>
+
+</form>
+
+<p class="">
+  Already have an account?
+  <a class="text-blue-500" routerLink="/login">login here</a>
+</p>
+</div>

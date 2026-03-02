@@ -1,7 +1,7 @@
 package com.example.SyncIn.service;
 
+import com.example.SyncIn.CustomException.UserAlreadyExistsException;
 import com.example.SyncIn.dto.LoginResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +10,6 @@ import com.example.SyncIn.repository.UserRepository;
 import com.example.SyncIn.dto.LoginRequest;
 
 import com.example.SyncIn.model.User;
-
-import java.util.Map;
 
 
 @Service
@@ -32,11 +30,11 @@ public class AuthService {
     {
         if(userRepository.existsByEmail(registerRequest.getEmail()))
         {
-            throw new RuntimeException("User with this email already exists");
+            throw new UserAlreadyExistsException("User with this email already exists", "email");
         }
         if(userRepository.existsByUsername(registerRequest.getUsername()))
         {
-            throw new RuntimeException("User with this username already exists");
+            throw new UserAlreadyExistsException("User with this username already exists", "username");
         }
 
         User user = User.builder()
@@ -46,6 +44,8 @@ public class AuthService {
             .build();
 
         userRepository.save(user);
+
+        System.out.print("User registered successfully");
 
         return "User registered successfully!!";
     }
@@ -64,9 +64,11 @@ public class AuthService {
 
         LoginResponse loginResponse = new LoginResponse(
                 token,
+                user.getName(),
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getAvatarUrl()
         );
 
         return loginResponse;

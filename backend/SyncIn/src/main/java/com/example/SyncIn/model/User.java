@@ -31,6 +31,10 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
+    @Setter
+    @Column(nullable = true)
+    private String name;
+
     @Column(nullable = false)
     @JsonIgnore
     @Setter(AccessLevel.NONE)

@@ -1,1 +1,151 @@
-<p>post-detail works!</p>
+@if(detailedPost$ | async; as post) {
+  <div class="bg-white p-4 mb-4 shadow rounded-3xl">
+    <div (click)="goToPost(post.author.id)" class="bg-zinc-100 mb-3 p-2 rounded-2xl cursor-pointer flex flex-row w-fit gap-4">
+      <img class="rounded-4xl w-11 h-11 object-cover" [src]=`${post.author.avatar_url}` alt="owner avatar">
+      <div class="flex flex-col">
+        <span class="font-bold text-lg">{{post.author.name}}</span>
+        <span class=" text-sm text-gray-600">@{{post.author.username}}</span>
+      </div>
+    </div>
+    <h2 class="font-bold text-lg">{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+
+        <div class="flex gap-6 items-center text-sm text-gray-600">
+          <div class="flex items-center gap-6">
+            <button (click)="votePost(post.postId, 'UPVOTE')" class="flex cursor-pointer items-center gap-2 transition" [class.text-blue-600]="voteType === 'UPVOTE'" [class.text-gray-500]="voteType !== 'UPVOTE'">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+              </svg>
+              <span>{{ post.upVoteCount }}</span></button>
+
+            <button (click)="votePost(post.postId, 'DOWNVOTE')" class="flex cursor-pointer items-center gap-2 transition" [class.text-red-600]="voteType === 'DOWNVOTE'" [class.text-gray-500]="voteType !== 'DOWNVOTE'">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+              </svg>
+              <span>{{ post.downVoteCount }}</span></button>
+          </div>
+          <span>Comments: {{post.commentCount}}</span>
+        </div>
+  </div>
+
+
+  <button class="bg-black text-white shadow-xl px-3 py-2 rounded-2xl" (click)="showCommentBox()">Comment</button>
+
+  @if(post?.comments?.length){
+    <div class="mt-6 space-y-4 rounded-3xl">
+      @for(comment of post.comments; track comment.commentId) {
+        <div class="bg-gray-50 p-4 rounded">
+          <div class="flex items-center gap-2 mb-2">
+            <img [src]="comment.author.avatar_url"
+                 class="w-8 h-8 rounded-full"/>
+            <span class="font-medium">
+              {{comment.author.username}}
+            </span>
+          </div>
+
+          <p>{{comment.content}}</p>
+          <div class="flex gap-6 items-center text-sm text-gray-600">
+            <div class="flex items-center gap-6">
+              <button (click)="voteComment(comment.commentId, 'UPVOTE')" class="flex cursor-pointer items-center gap-2 transition" [class.text-blue-600]="null === 'UPVOTE'" [class.text-gray-500]="null !== 'UPVOTE'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+                </svg>
+                <span>{{ comment.upVoteCount }}</span></button>
+
+              <button (click)="voteComment(comment.commentId, 'DOWNVOTE')" class="flex cursor-pointer items-center gap-2 transition" [class.text-red-600]="null === 'DOWNVOTE'" [class.text-gray-500]="null !== 'DOWNVOTE'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+                </svg>
+                <span>{{ comment.downVoteCount }}</span></button>
+            </div>
+          </div>
+        </div>
+        <button class="mr-10 bg-gray-500 rounded-lg p-1" (click)="getReplies(comment.commentId)">replies</button>
+        <button class="mr-10 bg-gray-500 rounded-lg p-1" (click)="showReplyOnPost(comment.commentId)">reply</button>
+        @if(comment.commentId == showReplies){
+          <div class="mt-6 ml-10 space-y-4">
+            @for(comment of commentReplies$ | async; track comment.commentId) {
+              <div class="bg-gray-50 p-4 rounded">
+                <div class="flex items-center gap-2 mb-2">
+                  <img [src]="comment.author.avatar_url"
+                       class="w-8 h-8 rounded-full"/>
+                  <span class="font-medium">
+              {{comment.author.username}}
+            </span>
+                </div>
+
+                <p>{{comment.content}}</p>
+                <div class="flex gap-6 items-center text-sm text-gray-600">
+                  <div class="flex items-center gap-6">
+                    <button (click)="voteComment(comment.commentId, 'UPVOTE')" class="flex cursor-pointer items-center gap-2 transition" [class.text-blue-600]="null === 'UPVOTE'" [class.text-gray-500]="null !== 'UPVOTE'">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+                      </svg>
+                      <span>{{ comment.upVoteCount }}</span></button>
+
+                    <button (click)="voteComment(comment.commentId, 'DOWNVOTE')" class="flex cursor-pointer items-center gap-2 transition" [class.text-red-600]="null === 'DOWNVOTE'" [class.text-gray-500]="null !== 'DOWNVOTE'">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 20l8-8h-5V4h-6v8H4z"/>
+                      </svg>
+                      <span>{{ comment.downVoteCount }}</span></button>
+                  </div>
+              </div>
+              </div>
+<!--              <button class="mr-10 bg-gray-500 rounded-lg p-1" (click)="getReplies(comment.commentId)">replies</button>-->
+<!--              <button class="mr-10 bg-gray-500 rounded-lg p-1" (click)="reply(comment.commentId)">reply</button>-->
+            }
+            <button class="mr-10 mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg" (click)="hideCommentReplies()">hide replies</button>
+          </div>
+        }
+        @if(replyOnPost == comment.commentId){
+          <div class="mt-6 ml-10">
+            <textarea
+              [(ngModel)]="commentContent"
+             rows="3"
+             placeholder="Write your reply..."
+              class="w-full border rounded-lg px-3 py-2"
+            ></textarea>
+
+            <button
+              (click)="reply(comment.commentId)"
+              class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
+            >
+              Reply
+            </button>
+            <button
+              (click)="showReplyOnPost(comment.commentId)"
+              class="mt-2 ml-10 bg-blue-600 text-white px-4 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        }
+      }
+    </div>
+  }
+@if(commentOnPost){
+  <div class="z-10 bottom-10 fixed">
+    <div class="flex w-100 gap-2 flex-col">
+      <label class="text-sm text-gray-400">Comment</label>
+      <input
+        [(ngModel)]="commentContent"
+        placeholder="Write a comment..."
+        class="p-2 w-full rounded-3xl shadow-lg text-black border-2 border-gray-400"/>
+    </div>
+
+    <button
+      (click)="addComment()"
+      class="mt-2 bg-black text-white px-3 py-1 rounded-3xl"
+    >
+      Comment
+    </button>
+    <button
+      (click)="showCommentBox()"
+      class="mt-2 ml-3 bg-red-600 text-white px-3 py-1 rounded-3xl"
+    >
+      close
+    </button>
+  </div>
+}
+}
+

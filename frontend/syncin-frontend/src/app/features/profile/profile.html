@@ -1,1 +1,66 @@
-<p>profile works!</p>
+@if(profile$ | async; as profile) {
+  <div class="bg-white p-4 mb-4 rounded shadow">
+    <div class="flex flex-row gap-4">
+      <img class="rounded-4xl" width="50" height="50" [ngSrc]=`${profile.avatar_url}` alt="owner avatar">
+      <div>
+        <h2 class=" font-bold text-lg">{{profile.username}}</h2>
+        <p class="text-sm text-gray-500">{{profile.bio}}</p>
+      </div>
+    </div>
+    <h2 class="font-bold text-lg">{{ profile.followers }}</h2>
+    <p>{{ profile.following }}</p>
+    @if(username != profile.username) {
+    @if(!profile.followedByMe)
+    {
+      @if(profile.followingMe){
+        <button (click)="followUser(id)" >Follow Back</button>
+      } @else {
+        <button (click)="followUser(id)" >Follow</button>
+      }
+    } @else {
+      <button (click)="unFollowUser(id)">Unfollow</button>
+    }
+    }@else {
+      <button class="bg-blue-300 mr-10 rounded-lg px-6 py-2" (click)="setCreatePost()">Create Post</button>
+      <a class="bg-blue-300 mr-10 rounded-lg px-6 py-2" routerLink="/editProfile">Edit Profile</a>
+    }
+  </div>
+}
+@if(posts$ | async){
+  @for (post of posts$ | async; track post.id) {
+    <div class="bg-white p-4 mb-4 rounded-3xl shadow-lg">
+      <div class="flex flex-row justify-between">
+        <span class="text-gray-600 text-sm">{{postedAt(post.createdAt)}}</span>
+      </div>
+      <a [routerLink]="['/post', post.id]" class="">
+        <h2 class="font-bold text-lg">{{ post.title }}</h2>
+        <p>{{ post.content }}</p>
+      </a>
+      <div class="flex justify-between mr-70 mt-3 text-sm text-gray-600">
+        <span>UpVotes: {{post.upVoteCount}}</span>
+        <span>DownVotes: {{post.downVoteCount}}</span>
+        <span>Comments: {{post.commentCount}}</span>
+      </div>
+    </div>
+  }
+}
+
+
+@if (isCreatePostOpen) {
+
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" (click)="$event.stopPropagation()">
+
+    <button class="close-btn" (click)="setCreatePost()">✕</button>
+
+    <form (ngSubmit)="createPost()">
+      <div class="flex flex-col">
+        <span>Title for post</span>
+        <input class="mx-4 p-1 rounded-lg bg-white text-gray-700" [(ngModel)]="title" name="title" placeholder="Enter post title..." />
+        <span>Post Content</span>
+        <input class="mx-4 p-1 rounded-lg bg-white text-gray-700 " [(ngModel)]="content" name="content" placeholder="Enter content of post here..."/>
+        <button class="cursor-pointer w-24 bg-blue-500 mr-10 rounded-lg px-6 py-2 mt-10" type="submit">post</button>
+      </div>
+    </form>
+  </div>
+
+}
